@@ -1,0 +1,30 @@
+.messages-and-users {
+    display: none;
+    margin-bottom: 30px;
+}
+
+.messages-list {
+    width: 800px;
+    height: 400px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    margin-right: 30px;
+    background-color: #d5ecd3;
+}
+
+.users-list {
+    width: 200px;
+    height: 400px;
+    border-radius: 5px;
+    border: 1px solid gray;
+    background-color: #d5ecd3;
+}
+
+.controls {
+    display: none;
+}
+
+.new-message {
+    width: 800px;
+    margin-right: 30px;
+}
