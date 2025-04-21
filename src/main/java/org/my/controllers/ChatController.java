@@ -1,27 +1,25 @@
 package org.my.controllers;
-import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
+import org.my.dto.DtoChatUser;
+import org.my.dto.DtoMessage;
+import org.my.mappers.ChatUserMapper;
+import org.my.mappers.MessageMapper;
 import org.my.models.ChatUser;
 import org.my.models.Message;
 import org.my.repositories.ChatUserRepository;
 import org.my.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
-
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class ChatController {
-
     @Autowired
     private ChatUserRepository chatUserRepository;
-
     @Autowired
     private MessageRepository messageRepository;
 
@@ -48,11 +46,9 @@ public class ChatController {
 
     @PostMapping("/message")
     public Map<Object, Object> sendMessage(@RequestParam String message)  {
-
         if(Strings.isEmpty(message)) {
             return Map.of("result", false);
         }
-
         String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
         ChatUser user = chatUserRepository.findBySessionId(sessionId).get();
         Message newMessage = new Message();
@@ -64,12 +60,16 @@ public class ChatController {
     }
 
     @GetMapping("/message")
-    public List<String> getMessagesList() {
-        return null;
+    public List<DtoMessage> getMessagesList() {
+       return messageRepository.findAll(Sort.by(Sort.Direction.ASC, "dateTime")).stream()
+               .map(MessageMapper::mapMessageToDto)
+               .collect(Collectors.toList());
     }
 
     @GetMapping("/user")
-    public HashMap<Integer, String> getUsersList() {
-        return null;
+    public List<DtoChatUser> getUsersList() {
+        return chatUserRepository.findAll().stream()
+                .map(ChatUserMapper::mapChatUserToDto)
+                .collect(Collectors.toList());
     }
 }
